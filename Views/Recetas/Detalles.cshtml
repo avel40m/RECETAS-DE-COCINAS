@@ -1,0 +1,260 @@
+﻿@model IEnumerable<RecetasCocinas.Models.receta>
+
+@{
+    ViewBag.Title = "Detalles";
+}
+
+<style>
+
+    a {
+        float: right;
+        margin-top: 15px;
+        padding-left: 40px;
+    }
+
+    #contedor {
+        display: flex;
+    }
+
+    input[type="checkbox"] {
+        display: none;
+    }
+
+        input[type="checkbox"]:checked ~ .modal,
+        input[type="checkbox"]:checked ~ .modal-background {
+            display: block;
+        }
+
+    .modal-background {
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+        position: fixed;
+        top: 0;
+        left: 0;
+        display: none;
+        z-index: 9998;
+    }
+
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+        display: none;
+        width: 600px;
+        height: 500px;
+        background-color: #fff;
+        box-sizing: border-box;
+        z-index: 9999;
+    }
+
+        .modal > p {
+            padding: 15px;
+            margin: 0;
+        }
+
+    .modal-header {
+        background-color: #f9f9f9;
+        border-bottom: 1px solid #dddddd;
+        box-sizing: border-box;
+        height: 50px;
+    }
+
+        .modal-header h3 {
+            margin: 0;
+            box-sizing: border-box;
+            padding-left: 15px;
+            line-height: 50px;
+            color: #4d4d4d;
+            font-size: 16px;
+            display: inline-block;
+        }
+
+        .modal-header label {
+            box-sizing: border-box;
+            border-left: 1px solid #dddddd;
+            float: right;
+            line-height: 50px;
+            padding: 0 15px 0 15px;
+            cursor: pointer;
+        }
+
+            .modal-header label:hover img {
+                opacity: 0.6;
+            }
+    .example-label{
+        margin-left:570px;
+    }
+        .example-label:hover {
+            cursor:pointer;
+            text-decoration:underline;
+        }
+    .form-group{
+        padding:10px;
+    }
+
+    .eliminar{
+        text-decoration:none;
+        margin-top: 0px;
+    }
+    .eliminar:hover {
+        text-decoration:underline;
+    }
+</style>
+
+<h2>@ViewBag.receta.titulo</h2>
+<input type="checkbox" id="modal">
+<label for="modal" class="example-label text-primary" onclick="buscar(@ViewBag.id)">Actualizar datos</label>
+<label for="modal" class="modal-background"></label>
+
+<a href="@Url.Action("Eliminar","Recetas",new { id = ViewBag.id })" class="text-danger eliminar" onclick="return Eliminar()">Eliminar</a>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 text-center">
+            <img src="@Url.Content(ViewBag.receta.imagen)" alt="Alternate Text" class="rounded" width="325" />
+        </div>
+        <div class="col-md-6">
+            <h5>@ViewBag.receta.descripcion</h5>
+            <p> <strong>Tipo: </strong> @ViewBag.tipo.descripcion</p>
+            <p><strong>Fecha: </strong> @ViewBag.receta.fecha</p>
+            <p><strong>Publicación: </strong> @ViewBag.publicar </p>
+            <p>
+                Valoracion:
+                @for (int i = 0; i < ViewBag.valoracion; i++)
+                {
+
+                    <img src="https://img.icons8.com/fluency/24/000000/star.png" />
+                }
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div id="contedor">
+                <h1 class="text-danger">Ingredientes</h1>
+                <a href="@Url.Action("Crear","Ingredientes", new { id = @ViewBag.id })">Agregar Ingredientes</a>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div id="contedor">
+                <h1 class="text-danger">Preparación</h1>
+                <a href="@Url.Action("Crear","Preparaciones",new { id = @ViewBag.id })">Agregar preparacion</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            @foreach (var item in ViewBag.ListIngrediente)
+            {
+                <ol>
+                    <li>@item.descripcion</li>
+                </ol>
+            }
+        </div>
+        <div class="col-md-6">
+            @foreach (var item in ViewBag.ListPreparacion)
+            {
+                <ol>
+                    <li>@item.descripcion</li>
+                </ol>
+            }
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal">
+    <div class="modal-header">
+        <h3>Modal Title</h3>
+        <label for="modal">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAdVBMVEUAAABNTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU1NTU0N3NIOAAAAJnRSTlMAAQIDBAUGBwgRFRYZGiEjQ3l7hYaqtLm8vsDFx87a4uvv8fP1+bbY9ZEAAAB8SURBVBhXXY5LFoJAAMOCIP4VBRXEv5j7H9HFDOizu2TRFljedgCQHeocWHVaAWStXnKyl2oVWI+kd1XLvFV1D7Ng3qrWKYMZ+MdEhk3gbhw59KvlH0eTnf2mgiRwvQ7NW6aqNmncukKhnvo/zzlQ2PR/HgsAJkncH6XwAcr0FUY5BVeFAAAAAElFTkSuQmCC" width="16" height="16" alt="">
+        </label>
+    </div>
+    <form action="" method="post" id="formulario">
+        <input type="hidden" name="id" id="id" value="" />
+        <div class="form-group">
+            <label>Titulo</label>
+            <input type="text" name="titulo" id="titulo" class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label>Descripcion</label>
+            <textarea name="descripcion" id="descripcion" class="form-control"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Tipo</label>
+            <select name="id_tipo" id="idtipo" class="form-control">
+                @foreach (var item in ViewBag.selectTipo)
+                {
+                    <option value="@item.id">@item.descripcion</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Valoracion</label>
+            <select name="valoracion" id="valoracion" class="form-control">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+        </div>
+        <input type="submit" value="Actualizar" class="btn btn-outline-warning m-2" />
+    </form>
+</div>
+
+
+
+<script src="~/Scripts/jquery-3.6.0.min.js"></script>
+<script>
+    function buscar(id) {
+        $.ajax({
+            type: "GET",
+            url: "https://localhost:44398/Recetas/Buscar/" + id,
+            data: "JSON",
+            success: function (resp) {
+                console.log(resp)
+                $("#id").val(resp[0].id),
+                $("#titulo").val(resp[0].titulo),
+                    $("#descripcion").val(resp[0].Rdescripcion),
+                    $("#idtipo").val(resp[0].Tdescripcion),
+                $("#valoracion").val(resp[0].valoracion)
+            },
+            error: function (e) {
+                console.log(e);
+            }
+        })
+    }
+
+    $("#formulario").submit(function (e) {
+        e.preventDefault();
+        var formulario = $("#formulario");
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("Actualizar","Recetas")",
+            data: formulario.serialize(),
+            success: function (resp) {
+                alert(resp);
+                location.reload();
+            }, error: function (e) {
+                alert(e);
+            }
+        })
+    })
+
+    function Eliminar() {
+        if (confirm("¿Desea Eliminar está receta?")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+</script>

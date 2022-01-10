@@ -1,0 +1,30 @@
+﻿@model RecetasCocinas.Models.administrador
+
+@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+<link href="~/Content/administrador.css" rel="stylesheet" />
+
+
+<form action="/administradores/Index" method="post" id="formulario">
+    <div class="contenedor">
+        <label>Usuario</label>
+        <input type="text" name="usuario" value="" />
+    </div>
+    <div class="contenedor">
+        <label>Contraseña</label>
+        <input type="password" name="clave" value="" />
+    </div>
+    <div class="contenedor">
+        <input type="submit" value="Ingresar" />
+    </div>
+</form>
+
+@if (!String.IsNullOrEmpty(ViewBag.mensaje))
+{
+    <script>
+        alert("@ViewBag.mensaje")
+    </script>
+}
+

@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Cocina_recetaModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="ingrediente">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="descripcion" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <Property Name="id_receta" Type="Int32" />
+    <NavigationProperty Name="receta" Relationship="Self.FK__ingredien__id_re__2C3393D0" FromRole="ingrediente" ToRole="receta" />
+  </EntityType>
+  <EntityType Name="preparacion">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="descripcion" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+    <Property Name="id_receta" Type="Int32" />
+    <NavigationProperty Name="receta" Relationship="Self.FK__preparaci__id_re__2D27B809" FromRole="preparacion" ToRole="receta" />
+  </EntityType>
+  <EntityType Name="receta">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="titulo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="imagen" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="descripcion" Type="String" MaxLength="140" FixedLength="false" Unicode="false" />
+    <Property Name="id_tipo" Type="Int32" />
+    <Property Name="publicar" Type="Boolean" />
+    <Property Name="fecha" Type="DateTime" Precision="3" />
+    <Property Name="valoracion" Type="Int32" />
+    <NavigationProperty Name="ingrediente" Relationship="Self.FK__ingredien__id_re__2C3393D0" FromRole="receta" ToRole="ingrediente" />
+    <NavigationProperty Name="preparacion" Relationship="Self.FK__preparaci__id_re__2D27B809" FromRole="receta" ToRole="preparacion" />
+    <NavigationProperty Name="tipo" Relationship="Self.FK__receta__id_tipo__2A4B4B5E" FromRole="receta" ToRole="tipo" />
+  </EntityType>
+  <EntityType Name="tipo">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="descripcion" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="receta" Relationship="Self.FK__receta__id_tipo__2A4B4B5E" FromRole="tipo" ToRole="receta" />
+  </EntityType>
+  <Association Name="FK__ingredien__id_re__2C3393D0">
+    <End Role="receta" Type="Self.receta" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="ingrediente" Type="Self.ingrediente" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="receta">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="ingrediente">
+        <PropertyRef Name="id_receta" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__preparaci__id_re__2D27B809">
+    <End Role="receta" Type="Self.receta" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="preparacion" Type="Self.preparacion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="receta">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="preparacion">
+        <PropertyRef Name="id_receta" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__receta__id_tipo__2A4B4B5E">
+    <End Role="tipo" Type="Self.tipo" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="receta" Type="Self.receta" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tipo">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="receta">
+        <PropertyRef Name="id_tipo" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="recetaEntity" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="ingrediente" EntityType="Self.ingrediente" />
+    <EntitySet Name="preparacion" EntityType="Self.preparacion" />
+    <EntitySet Name="receta" EntityType="Self.receta" />
+    <EntitySet Name="tipo" EntityType="Self.tipo" />
+    <AssociationSet Name="FK__ingredien__id_re__2C3393D0" Association="Self.FK__ingredien__id_re__2C3393D0">
+      <End Role="receta" EntitySet="receta" />
+      <End Role="ingrediente" EntitySet="ingrediente" />
+    </AssociationSet>
+    <AssociationSet Name="FK__preparaci__id_re__2D27B809" Association="Self.FK__preparaci__id_re__2D27B809">
+      <End Role="receta" EntitySet="receta" />
+      <End Role="preparacion" EntitySet="preparacion" />
+    </AssociationSet>
+    <AssociationSet Name="FK__receta__id_tipo__2A4B4B5E" Association="Self.FK__receta__id_tipo__2A4B4B5E">
+      <End Role="tipo" EntitySet="tipo" />
+      <End Role="receta" EntitySet="receta" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

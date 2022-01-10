@@ -1,0 +1,144 @@
+﻿@model RecetasCocinas.Models.preparacion
+
+@{
+    ViewBag.Title = "Crear";
+}
+
+<a href="@Url.Action("Index","Recetas")" class="text-primary">Volver</a>
+
+<p>Crear preparacion para el plato de <strong>@ViewBag.nombre</strong></p>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            @using (Html.BeginForm("Crear", "Preparaciones", FormMethod.Post, new { @id = "formulario" }))
+            {
+                <div class="form-group">
+                    <input type="hidden" name="id" id="idInput" />
+                    <input type="hidden" name="id_receta" value="@ViewBag.id" />
+                    @Html.LabelFor(x => x.descripcion)
+                    @Html.TextAreaFor(x => x.descripcion, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.descripcion, "", new { @class = "text-danger" })
+                </div>
+                <input type="submit" class="btn btn-outline-success" id="botonIngresar" value="Ingresar" />
+                <input type="submit" class="btn btn-outline-warning" id="botonActualizar" value="Ingresar" style="display:none" />
+            }
+        </div>
+        <div class="col-md-6">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Listado de preparación</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="datos">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+        $("#formulario").submit(function (e) {
+            e.preventDefault();
+
+            var formulario = $("#formulario");
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("Crear","Preparaciones")",
+                data: formulario.serialize(),
+                success: function (resp) {
+                    alert(resp);
+                    $("#idInput").val("");
+                    $("#descripcion").val("");
+                    $("#datos").html("");
+                    MostraDatos();
+                    $("#botonIngresar").css("display", "block");
+                    $("#botonActualizar").css("display", "none");
+                }, error: function (e) {
+                    alert(e)
+                }
+            })
+
+        })
+
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("Listado","Preparaciones", new { id = ViewBag.id })",
+            success: function (resp) {
+                console.log(resp)
+                for (i = 0; i < resp.length; i++) {
+                    var filas = "<tr>" +
+                        "<td>" + (i + 1) + " _ " + resp[i].descripcion + "</td>" +
+                        "<td>" +
+                        "<button class='btn btn-primary btn-sm' onclick='buscar(" + resp[i].id + ")'>Actualizar</button>" +
+                        "<button class='btn btn-danger btn-sm' onclick='eliminar(" + resp[i].id + ")'>Eliminar</button>" +
+                        "</tr>";
+                    $("#datos").append(filas);
+                }
+            }, error: function (e) {
+                console.log(e);
+            }
+        })
+
+    });
+
+    function MostraDatos() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("Listado","Preparaciones", new { id = ViewBag.id })",
+                success: function (resp) {
+                    console.log(resp)
+                    for (i = 0; i < resp.length; i++) {
+                        var filas = "<tr>" +
+                            "<td>" + (i + 1) + " _ " + resp[i].descripcion + "</td>" +
+                            "<td>" +
+                            "<button class='btn btn-primary btn-sm' onclick='buscar(" + resp[i].id + ")'>Actualizar</button>" +
+                            "<button class='btn btn-danger btn-sm' onclick='eliminar(" + resp[i].id + ")'>Eliminar</button>" +
+                            "</tr>";
+                        $("#datos").append(filas);
+                    }
+                }, error: function (e) {
+                    console.log(e);
+                }
+            })
+        }
+
+    function buscar(id) {
+        $.ajax({
+            type: "GET",
+            url: "https://localhost:44398/Preparaciones/Buscar/" + id,
+            success: function (resp) {
+                $("#idInput").val(resp[0].id);
+                $("#descripcion").val(resp[0].descripcion);
+                $("#botonIngresar").css("display", "none");
+                $("#botonActualizar").css("display", "block");
+            }, error: function (e) {
+                console.log(e);
+            }
+        })
+    }
+
+    function eliminar(id) {
+        if (confirm("¿Desea eliminar?")) {
+            $.ajax({
+                type: "POST",
+                url: "https://localhost:44398/Preparaciones/Eliminar/" + id,
+                success: function (resp) {
+                    alert(resp);
+                    $("#datos").html("");
+                    MostraDatos();
+                }, error: function (e) {
+                    alert(e);
+                }
+            })
+        } else {
+            alert("No se elimino");
+        }
+    }
+</script>

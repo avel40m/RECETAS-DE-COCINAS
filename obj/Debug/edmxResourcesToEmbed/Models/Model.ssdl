@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Cocina_recetaModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="administrador">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="usuario" Type="varchar" MaxLength="50" />
+    <Property Name="clave" Type="varchar" MaxLength="50" />
+    <Property Name="pregunta" Type="varchar" MaxLength="50" />
+    <Property Name="respuesta" Type="varchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="ingrediente">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="descripcion" Type="varchar" MaxLength="100" />
+    <Property Name="id_receta" Type="int" />
+  </EntityType>
+  <EntityType Name="preparacion">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="descripcion" Type="varchar" MaxLength="255" />
+    <Property Name="id_receta" Type="int" />
+  </EntityType>
+  <EntityType Name="receta">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="titulo" Type="varchar" MaxLength="50" />
+    <Property Name="imagen" Type="varchar" MaxLength="200" />
+    <Property Name="descripcion" Type="varchar" MaxLength="140" />
+    <Property Name="id_tipo" Type="int" />
+    <Property Name="publicar" Type="bit" />
+    <Property Name="fecha" Type="datetime" />
+    <Property Name="valoracion" Type="int" />
+  </EntityType>
+  <EntityType Name="tipo">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="descripcion" Type="varchar" MaxLength="100" />
+  </EntityType>
+  <Association Name="FK__ingredien__id_re__2C3393D0">
+    <End Role="receta" Type="Self.receta" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="ingrediente" Type="Self.ingrediente" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="receta">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="ingrediente">
+        <PropertyRef Name="id_receta" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__preparaci__id_re__2D27B809">
+    <End Role="receta" Type="Self.receta" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="preparacion" Type="Self.preparacion" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="receta">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="preparacion">
+        <PropertyRef Name="id_receta" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__receta__id_tipo__2A4B4B5E">
+    <End Role="tipo" Type="Self.tipo" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="receta" Type="Self.receta" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tipo">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="receta">
+        <PropertyRef Name="id_tipo" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="Cocina_recetaModelStoreContainer">
+    <EntitySet Name="administrador" EntityType="Self.administrador" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ingrediente" EntityType="Self.ingrediente" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="preparacion" EntityType="Self.preparacion" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="receta" EntityType="Self.receta" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="tipo" EntityType="Self.tipo" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK__ingredien__id_re__2C3393D0" Association="Self.FK__ingredien__id_re__2C3393D0">
+      <End Role="receta" EntitySet="receta" />
+      <End Role="ingrediente" EntitySet="ingrediente" />
+    </AssociationSet>
+    <AssociationSet Name="FK__preparaci__id_re__2D27B809" Association="Self.FK__preparaci__id_re__2D27B809">
+      <End Role="receta" EntitySet="receta" />
+      <End Role="preparacion" EntitySet="preparacion" />
+    </AssociationSet>
+    <AssociationSet Name="FK__receta__id_tipo__2A4B4B5E" Association="Self.FK__receta__id_tipo__2A4B4B5E">
+      <End Role="tipo" EntitySet="tipo" />
+      <End Role="receta" EntitySet="receta" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

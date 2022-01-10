@@ -1,0 +1,33 @@
+﻿@model IEnumerable<RecetasCocinas.Models.tipo>
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<h2>Tipo de recetas</h2>
+<a href="@Url.Action("Crear","tipo")">Nuevo tipo</a>
+<table>
+    <tr>
+        <th>Receta</th>
+    </tr>
+        @foreach(var item in Model)
+            {
+            <tr>
+                <td>@item.descripcion</td>
+                <td>
+                    <a href="@Url.Action("Actualizar","tipo",new { id = item.id })">Actualizar</a>
+                    <a href="@Url.Action("Eliminar","tipo",new { id = item.id })" class="text-danger" onclick="return eliminar()">Eliminar</a>
+                </td>
+            </tr>
+            }
+</table>
+
+<script>
+    function eliminar() {
+        if (confirm("¿Desea eliminar el tipo de receta?")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+</script>

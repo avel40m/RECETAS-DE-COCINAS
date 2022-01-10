@@ -1,0 +1,45 @@
+﻿@model RecetasCocinas.Models.receta
+
+@{
+    ViewBag.Title = "Crear";
+}
+<a href="@Url.Action("Index","Tipo")">Ver listado de platos</a>
+<h2>Crear Recetas</h2>
+
+@using (Html.BeginForm("Crear", "Recetas", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+<div class="form-group">
+    @Html.LabelFor(r => r.titulo, new { @class = "label-control" })
+    <input type="text" name="titulo" class="form-control" value="" />
+    @Html.ValidationMessageFor(r => r.titulo, "", new { @class = "text-danger" })
+</div>
+    <br />
+    <div class="form-group">
+        <label for="formlabel" class="form-label">Seleccionar imagen</label>
+        <input type="file" name="imagen" id="imagen" class="form-control" value="" />
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(r => r.descripcion, new { @class = "label-control" })
+        @Html.TextAreaFor(r => r.descripcion, new { @class = "form-control" })
+        @Html.ValidationMessageFor(r => r.descripcion, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2" for="id_tipo">Tipo de plato</label>
+            @Html.DropDownList("id_tipo", null, htmlAttributes: new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.id_tipo, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        <label>Seleccionar la valoración del plato</label>
+        <select name="valoracion" class="form-control">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+    </div>
+    
+    <input type="submit" value="Guardar" class="btn btn-primary"/>
+}

@@ -1,0 +1,76 @@
+﻿@model IEnumerable<RecetasCocinas.Models.receta>
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<link href="~/Content/estilosPersonalizados.css" rel="stylesheet" />
+<a class="text-danger" href="@Url.Action("Logout","administradores")" style="float:right;">Cerrar session</a>
+<h2>Recetas</h2>
+<hr />
+@using (Html.BeginForm()) { 
+    <p class="mt-2 col-md-6">
+        Buscar Recetas:<input id="buscar" name="buscar" type="text" class="form-control mb-2" placeholder="Ingrese el titulo del plato/bebida" autocomplete="off">
+        <input type="submit" class="btn btn-outline-success" value="Buscar" />
+    </p>
+}
+
+<h5>Cantidad de recetas: @Model.Count()</h5>
+<table class="table">
+    <tr>
+        <th>Titulo</th>
+        <th>Imagen</th>
+        <th>Creación</th>
+        <th>Publicación</th>
+        <th>
+            <a href="@Url.Action("Crear","Recetas")" class="btn btn-outline-info">Crear una Receta</a>
+        </th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.titulo</td>
+            <td>
+                <img src="@Url.Content(item.imagen)" width="100" />
+            </td>
+            <td>@item.fecha</td>
+            <td>
+                @if (item.publicar == true)
+                {
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked"
+                               onclick="Modificar(@item.id)" checked>
+                        <label class="form-check-label" for="flexSwitchCheckChecked"></label>
+                    </div>
+                }
+                else
+                {
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"
+                               onclick="Modificar(@item.id)">
+                        <label class="form-check-label" for="flexSwitchCheckDefault"></label>
+                    </div>
+                }
+            </td>
+            <td>
+                <a href="@Url.Action("Detalles","Recetas",new { id = item.id })" class="text-primary">Detalles</a>
+            </td>
+        </tr>
+    }
+</table>
+
+<script src="~/Scripts/jquery-3.6.0.js"></script>
+
+<script>
+    function Modificar(id) {
+        $.ajax({
+            type: "POST",
+            url: "https://localhost:44398/Recetas/Publicacion/" + id,
+            success: function (resp) {
+                alert(resp);
+            }, error: function (e) {
+                alert(e);
+            }
+        })
+    }
+</script>

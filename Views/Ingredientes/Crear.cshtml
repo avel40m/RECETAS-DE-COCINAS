@@ -1,0 +1,157 @@
+﻿@model RecetasCocinas.Models.ingrediente
+
+@{
+    ViewBag.Title = "Crear";
+}
+<a href="@Url.Action("Index","Recetas")" class="text-primary">Volver</a>
+
+<p>Agregar Ingrediente a la Receta <strong>@ViewBag.titulo</strong></p>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            @using (Html.BeginForm("Crear", "Ingredientes", FormMethod.Post, new { @id = "formulario" }))
+            {
+                <input type="hidden" name="id" id="idInput" />
+                <div class="form-group">
+                    @Html.LabelFor(i => i.descripcion, new { @class = "form-label" })
+                    @Html.TextAreaFor(i => i.descripcion, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(i => i.descripcion, "", new { @class = "text-danger" })
+                </div>
+                <input type="hidden" name="id_receta" value="@ViewBag.id" />
+
+                <div class="form-group">
+                    <input type="submit" value="Ingresar" id="guardar" class="btn btn-outline-success" />
+                    <input type="submit" value="Actualizar" id="actualizar" style="display:none" class="btn btn-outline-warning" />
+                </div>
+            }
+        </div>
+        <div class="col-md-6">
+            <h5>Listado de Ingredientes</h5>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Ingredientes</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="tablaDatos">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#formulario").submit(function (e) {
+            e.preventDefault();
+
+            var formulario = $("#formulario");
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("Crear","Ingredientes")",
+                data: formulario.serialize(),
+                success: function (resp) {
+                    alert(resp)
+                    $("#tablaDatos").html("");
+                    mostrarDatos();
+                },
+                error: function (e) {
+                    alert(e);
+                }
+
+            })
+            $("#idInput").val("");
+            $("#descripcion").val("");
+            $("#guardar").css('display', "block");
+            $("#actualizar").css('display', 'none');
+
+        })
+    })
+
+    $.ajax({
+        url: "@Url.Action("Listados","Ingredientes", new { id = ViewBag.id })",
+        data: "JSON",
+        type: "GET",
+        success: function (resp) {
+            console.log(resp);
+            for (i = 0; i < resp.length; i++) {
+                var filas = "<tr>" +
+                    "<td>" + (i + 1) +" _ " + resp[i].descripcion + "</td>" +
+                    "<td>" +
+                    "<button onclick='buscar(" + resp[i].id + ")' class='btn btn-primary btn-sm'>Actualizar</button>" +
+                    "<button onclick='eliminar(" + resp[i].id + ")' class='btn btn-danger btn-sm'>Eliminar</button>" +
+                    "</td>" +
+                    "</tr>";
+                $("#tablaDatos").append(filas);
+            }
+            },
+            error: function (e) {
+                console.log(e);
+            }
+    })
+
+    function buscar(id) {
+        $.ajax({
+            url: "https://localhost:44398/Ingredientes/Buscar/" + id,
+            type: "GET",
+            data: "JSON",
+            success: function (resp) {
+                console.log(resp[0].descripcion);
+                $("#idInput").val(resp[0].id);
+                $("#descripcion").val(resp[0].descripcion);
+                $("#guardar").css('display', "none");
+                $("#actualizar").css('display', 'block');
+            },
+            error: function (e) {
+                alert(e)
+            }
+        })
+    }
+
+    function mostrarDatos() {
+         $.ajax({
+        url: "@Url.Action("Listados","Ingredientes", new { id = ViewBag.id })",
+        data: "JSON",
+        type: "GET",
+        success: function (resp) {
+            for (i = 0; i < resp.length; i++) {
+                var filas = "<tr>" +
+                    "<td>"+ (i + 1) + " _ "  + resp[i].descripcion + "</td>" +
+                    "<td>" +
+                    "<button onclick='buscar(" + resp[i].id + ")' class='btn btn-primary btn-sm'>Actualizar</button>" +
+                    "<button onclick='eliminar(" + resp[i].id + ")' class='btn btn-danger btn-sm'>Eliminar</button>" +
+                    "</td>" +
+                    "</tr>";
+                $("#tablaDatos").append(filas);
+            }
+            },
+            error: function (e) {
+                console.log(e);
+            }
+        })
+    }
+
+    function eliminar(id) {
+        if (confirm("¿Quiere eliminar esté ingrediente?")) {
+            $.ajax({
+                type: 'POST',
+                url: 'https://localhost:44398/Ingredientes/Eliminar/' + id,
+                success: function (resp) {
+                    alert(resp);
+                    $("#tablaDatos").html("");
+                    mostrarDatos();
+                }, error: function (e) {
+                    alert(e);
+                }
+            });
+        } else {
+            alert("No se elimino")
+        }
+    }
+
+
+</script>
