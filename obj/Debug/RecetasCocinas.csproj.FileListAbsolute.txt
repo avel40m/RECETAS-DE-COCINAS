@@ -79,3 +79,4 @@ C:\Users\User\source\repos\RecetasCocinas\obj\Debug\RecetasCocinas.csproj.CoreCo
 C:\Users\User\source\repos\RecetasCocinas\obj\Debug\RecetasCocinas.csproj.CopyComplete
 C:\Users\User\source\repos\RecetasCocinas\obj\Debug\RecetasCocinas.dll
 C:\Users\User\source\repos\RecetasCocinas\obj\Debug\RecetasCocinas.pdb
+C:\Users\User\source\repos\RecetasCocinas\obj\Debug\RecetasCocinas.csproj.AssemblyReference.cache
